@@ -48,6 +48,17 @@ function ListingDetail() {
     onError: (e: any) => toast.error(e.message ?? "Could not open chat"),
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: () => del({ data: { id: listingId } }),
+    onSuccess: () => {
+      toast.success("Listing deleted");
+      qc.invalidateQueries({ queryKey: ["listings"] });
+      navigate({ to: "/dashboard" });
+    },
+    onError: (e: any) => toast.error(e.message ?? "Could not delete"),
+  });
+
+
   if (isLoading || !listing) {
     return <div className="mx-auto max-w-4xl p-8"><div className="h-96 animate-pulse rounded-xl bg-card/40" /></div>;
   }
