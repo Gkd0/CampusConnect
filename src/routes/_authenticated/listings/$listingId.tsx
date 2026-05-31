@@ -19,6 +19,7 @@ export const Route = createFileRoute("/_authenticated/listings/$listingId")({
 function ListingDetail() {
   const { listingId } = Route.useParams();
   const navigate = useNavigate();
+  const { user } = useAuthSession();
   const get = useServerFn(getListing);
   const favs = useServerFn(listFavoriteIds);
   const toggle = useServerFn(toggleFavorite);
