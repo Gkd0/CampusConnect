@@ -123,9 +123,36 @@ function ListingDetail() {
 
           <div className="flex gap-2">
             {isOwner ? (
-              <Button asChild variant="outline" className="flex-1">
-                <Link to="/dashboard">This is your listing</Link>
-              </Button>
+              <>
+                <Button asChild variant="outline" className="flex-1">
+                  <Link to="/dashboard">Your listing</Link>
+                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" size="icon" aria-label="Delete listing">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete this listing?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This permanently removes "{listing.title}". This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => deleteMutation.mutate()}
+                        disabled={deleteMutation.isPending}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        {deleteMutation.isPending ? "Deleting…" : "Delete"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </>
             ) : (
               <Button onClick={() => message.mutate()} disabled={message.isPending} className="flex-1 gradient-primary text-primary-foreground hover:opacity-90">
                 <MessageSquare className="h-4 w-4" /> Message seller
