@@ -1,11 +1,11 @@
+/* Fonts: Syne (headings), Plus Jakarta Sans (body) — must precede all other statements */
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
 
+@custom-invariant: ;
 @custom-variant dark (&:is(.dark *));
-
-/* Fonts: Syne (headings), Plus Jakarta Sans (body) */
-@import url("https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap");
 
 @theme inline {
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
