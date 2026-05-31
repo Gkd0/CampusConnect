@@ -1,12 +1,16 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Heart, MessageSquare, Tag } from "lucide-react";
+import { Heart, MessageSquare, Tag, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { getListing } from "@/lib/listings.functions";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { getListing, deleteListing } from "@/lib/listings.functions";
 import { listFavoriteIds, toggleFavorite } from "@/lib/favorites.functions";
 import { openConversation } from "@/lib/chat.functions";
 import { useAuthSession } from "@/hooks/use-auth-session";
@@ -24,6 +28,7 @@ function ListingDetail() {
   const favs = useServerFn(listFavoriteIds);
   const toggle = useServerFn(toggleFavorite);
   const openConvo = useServerFn(openConversation);
+  const del = useServerFn(deleteListing);
   const qc = useQueryClient();
 
   const { data: listing, isLoading } = useQuery({
@@ -42,6 +47,17 @@ function ListingDetail() {
     onSuccess: (res) => navigate({ to: "/chat/$conversationId", params: { conversationId: res.id } }),
     onError: (e: any) => toast.error(e.message ?? "Could not open chat"),
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => del({ data: { id: listingId } }),
+    onSuccess: () => {
+      toast.success("Listing deleted");
+      qc.invalidateQueries({ queryKey: ["listings"] });
+      navigate({ to: "/dashboard" });
+    },
+    onError: (e: any) => toast.error(e.message ?? "Could not delete"),
+  });
+
 
   if (isLoading || !listing) {
     return <div className="mx-auto max-w-4xl p-8"><div className="h-96 animate-pulse rounded-xl bg-card/40" /></div>;
@@ -107,9 +123,36 @@ function ListingDetail() {
 
           <div className="flex gap-2">
             {isOwner ? (
-              <Button asChild variant="outline" className="flex-1">
-                <Link to="/dashboard">This is your listing</Link>
-              </Button>
+              <>
+                <Button asChild variant="outline" className="flex-1">
+                  <Link to="/dashboard">Your listing</Link>
+                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" size="icon" aria-label="Delete listing">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete this listing?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This permanently removes "{listing.title}". This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => deleteMutation.mutate()}
+                        disabled={deleteMutation.isPending}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        {deleteMutation.isPending ? "Deleting…" : "Delete"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </>
             ) : (
               <Button onClick={() => message.mutate()} disabled={message.isPending} className="flex-1 gradient-primary text-primary-foreground hover:opacity-90">
                 <MessageSquare className="h-4 w-4" /> Message seller
