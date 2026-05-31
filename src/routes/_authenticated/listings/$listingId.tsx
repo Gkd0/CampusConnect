@@ -50,6 +50,7 @@ function ListingDetail() {
   const fav = favIds.includes(listing.id);
   const seller = (listing as any).profiles;
   const cover = (listing.images as string[])?.[0];
+  const isOwner = !!user && user.id === (listing as any).user_id;
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
