@@ -4,7 +4,6 @@
 @source "../src";
 @import "tw-animate-css";
 
-@custom-invariant: ;
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
