@@ -168,8 +168,8 @@ function NewListing() {
             </div>
             {pricing === "price" && (
               <div className="space-y-1.5">
-                <Label htmlFor="price">Price (USD)</Label>
-                <Input id="price" type="number" min={0} step={0.01} value={price} onChange={(e) => setPrice(e.target.value)} />
+                <Label htmlFor="price">Price (₹ INR)</Label>
+                <Input id="price" type="number" min={0} step={1} value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g. 499" />
               </div>
             )}
             <div className="space-y-1.5">

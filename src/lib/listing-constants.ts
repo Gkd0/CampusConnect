@@ -1,15 +1,17 @@
 export const ITEM_CATEGORIES = [
   "Textbooks",
   "Electronics",
+  "Hostel & PG Essentials",
   "Furniture",
   "Clothing",
-  "Bikes & Transport",
-  "Dorm & Home",
+  "Cycles & Transport",
+  "Lab & Stationery",
   "Other",
 ] as const;
 
 export const SKILL_CATEGORIES = [
   "Tutoring",
+  "JEE/NEET/GATE Prep",
   "Coding Help",
   "Design",
   "Writing & Editing",
@@ -29,6 +31,12 @@ export const CONDITIONS = [
 
 export type ListingType = "item" | "skill";
 
+const INR = new Intl.NumberFormat("en-IN", {
+  style: "currency",
+  currency: "INR",
+  maximumFractionDigits: 0,
+});
+
 export function formatPriceLabel(input: {
   priceCents: number | null;
   freeOrTrade: "price" | "free" | "trade" | "swap";
@@ -38,5 +46,6 @@ export function formatPriceLabel(input: {
   if (input.freeOrTrade === "trade") return "Trade";
   if (input.freeOrTrade === "swap") return "Skill swap";
   if (input.priceCents == null) return input.type === "skill" ? "Skill swap" : "Free";
-  return `$${(input.priceCents / 100).toFixed(input.priceCents % 100 === 0 ? 0 : 2)}`;
+  // price_cents stores paise (1 INR = 100 paise)
+  return INR.format(input.priceCents / 100);
 }
