@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { getListing } from "@/lib/listings.functions";
 import { listFavoriteIds, toggleFavorite } from "@/lib/favorites.functions";
 import { openConversation } from "@/lib/chat.functions";
+import { useAuthSession } from "@/hooks/use-auth-session";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/listings/$listingId")({
