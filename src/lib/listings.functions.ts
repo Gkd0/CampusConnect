@@ -86,6 +86,20 @@ export const listMyListings = createServerFn({ method: "GET" })
     return data ?? [];
   });
 
+export const deleteListing = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { error } = await supabase
+      .from("listings")
+      .delete()
+      .eq("id", data.id)
+      .eq("user_id", userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
 export const listListingsByUsername = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ username: z.string().min(1).max(40) }).parse(d))
   .handler(async ({ data }) => {
