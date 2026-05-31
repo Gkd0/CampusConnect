@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { getListing } from "@/lib/listings.functions";
 import { listFavoriteIds, toggleFavorite } from "@/lib/favorites.functions";
 import { openConversation } from "@/lib/chat.functions";
+import { useAuthSession } from "@/hooks/use-auth-session";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/listings/$listingId")({
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/_authenticated/listings/$listingId")({
 function ListingDetail() {
   const { listingId } = Route.useParams();
   const navigate = useNavigate();
+  const { user } = useAuthSession();
   const get = useServerFn(getListing);
   const favs = useServerFn(listFavoriteIds);
   const toggle = useServerFn(toggleFavorite);
@@ -48,6 +50,7 @@ function ListingDetail() {
   const fav = favIds.includes(listing.id);
   const seller = (listing as any).profiles;
   const cover = (listing.images as string[])?.[0];
+  const isOwner = !!user && user.id === (listing as any).user_id;
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
@@ -103,9 +106,15 @@ function ListingDetail() {
           )}
 
           <div className="flex gap-2">
-            <Button onClick={() => message.mutate()} disabled={message.isPending} className="flex-1 gradient-primary text-primary-foreground hover:opacity-90">
-              <MessageSquare className="h-4 w-4" /> Message seller
-            </Button>
+            {isOwner ? (
+              <Button asChild variant="outline" className="flex-1">
+                <Link to="/dashboard">This is your listing</Link>
+              </Button>
+            ) : (
+              <Button onClick={() => message.mutate()} disabled={message.isPending} className="flex-1 gradient-primary text-primary-foreground hover:opacity-90">
+                <MessageSquare className="h-4 w-4" /> Message seller
+              </Button>
+            )}
             <Button variant="outline" size="icon" onClick={() => favMutation.mutate(!fav)} aria-label="Save">
               <Heart className={`h-4 w-4 ${fav ? "fill-destructive text-destructive" : ""}`} />
             </Button>
