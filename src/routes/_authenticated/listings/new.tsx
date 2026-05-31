@@ -71,7 +71,7 @@ function NewListing() {
           price_cents: priceCents,
           price_label: priceLabel,
           tags,
-          images: [],
+          images,
         },
       });
       toast.success("Listing posted!");
