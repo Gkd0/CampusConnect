@@ -33,7 +33,18 @@ function NewListing() {
   const [price, setPrice] = useState("");
   const [tagInput, setTagInput] = useState("");
   const [tags, setTags] = useState<string[]>([]);
+  const [imageUrl, setImageUrl] = useState("");
+  const [images, setImages] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
+
+  const addImage = () => {
+    const v = imageUrl.trim();
+    if (!v) return;
+    try { new URL(v); } catch { toast.error("Enter a valid image URL"); return; }
+    if (images.length >= 6) return;
+    setImages([...images, v]);
+    setImageUrl("");
+  };
 
   const cats = type === "skill" ? SKILL_CATEGORIES : ITEM_CATEGORIES;
   const progress = (step / 4) * 100;
