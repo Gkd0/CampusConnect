@@ -28,6 +28,7 @@ function ListingDetail() {
   const favs = useServerFn(listFavoriteIds);
   const toggle = useServerFn(toggleFavorite);
   const openConvo = useServerFn(openConversation);
+  const del = useServerFn(deleteListing);
   const qc = useQueryClient();
 
   const { data: listing, isLoading } = useQuery({
