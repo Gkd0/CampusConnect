@@ -153,6 +153,37 @@ function NewListing() {
               <Label htmlFor="desc">Description</Label>
               <Textarea id="desc" rows={4} value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Add condition notes, what you're looking for, availability…" />
             </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="image">Image URLs (optional)</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="image"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addImage(); } }}
+                  placeholder="https://… (paste a link to a photo)"
+                />
+                <Button type="button" variant="outline" onClick={addImage} disabled={images.length >= 6}>Add</Button>
+              </div>
+              {images.length > 0 && (
+                <div className="mt-2 grid grid-cols-3 gap-2">
+                  {images.map((src) => (
+                    <div key={src} className="relative aspect-square overflow-hidden rounded-md border border-border">
+                      <img src={src} alt="" className="h-full w-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => setImages(images.filter((x) => x !== src))}
+                        aria-label="Remove image"
+                        className="absolute right-1 top-1 rounded-full bg-background/80 p-1 backdrop-blur hover:bg-background"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <p className="text-[11px] text-muted-foreground">Paste a direct image URL. Up to 6 images.</p>
+            </div>
           </div>
         )}
 
