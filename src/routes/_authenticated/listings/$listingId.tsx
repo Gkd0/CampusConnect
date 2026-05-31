@@ -106,9 +106,15 @@ function ListingDetail() {
           )}
 
           <div className="flex gap-2">
-            <Button onClick={() => message.mutate()} disabled={message.isPending} className="flex-1 gradient-primary text-primary-foreground hover:opacity-90">
-              <MessageSquare className="h-4 w-4" /> Message seller
-            </Button>
+            {isOwner ? (
+              <Button asChild variant="outline" className="flex-1">
+                <Link to="/dashboard">This is your listing</Link>
+              </Button>
+            ) : (
+              <Button onClick={() => message.mutate()} disabled={message.isPending} className="flex-1 gradient-primary text-primary-foreground hover:opacity-90">
+                <MessageSquare className="h-4 w-4" /> Message seller
+              </Button>
+            )}
             <Button variant="outline" size="icon" onClick={() => favMutation.mutate(!fav)} aria-label="Save">
               <Heart className={`h-4 w-4 ${fav ? "fill-destructive text-destructive" : ""}`} />
             </Button>
